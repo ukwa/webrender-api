@@ -165,26 +165,29 @@ def _warcprox_write_har_content(har_js, url, warc_prefix, warcprox=WARCPROX, inc
         for rende in page['renderedElements']:
             selector = rende['selector']
             im_fmt = rende['format']
+            url_prefix = 'screenshot'
             if im_fmt == 'PNG':
                 im_fmt = 'image/png'
             elif im_fmt == 'JPEG' or im_fmt == 'JPG':
                 im_fmt = 'image/jpeg'
             elif im_fmt == 'PDF':
                 im_fmt = 'application/pdf'
+                url_prefix = 'pdf'
             else:
                 im_fmt = 'application/octet-stream; ext=%s' % im_fmt
             content = rende['content']
             image = base64.b64decode(content)
             # Keep the :root image
             if selector == ':root':
-                full_png = image
+                if im_fmt == 'image/png':
+                    full_png = image
                 xpointurl = location
             else:
                 # https://www.w3.org/TR/2003/REC-xptr-framework-20030325/
                 xpointurl = "%s#xpointer(%s)" % (location, selector)
             # And write the WARC:
             _warcprox_write_record(warcprox_address=warcprox,
-                url="screenshot:{}".format(xpointurl),
+                url="{}:{}".format(url_prefix,xpointurl),
                 warc_type="resource", content_type=im_fmt,
                 payload=image, location=location,
                 extra_headers=warcprox_headers)
