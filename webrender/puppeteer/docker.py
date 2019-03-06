@@ -30,7 +30,8 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
     d_env = {
         'HTTP_PROXY': proxy,
         'HTTPS_PROXY': proxy,
-        'LC_ALL': 'en_US.utf8'
+        'LC_ALL': 'en_US.utf8',
+        'USER_AGENT_ADDITIONAL': "bl.uk_lddc_renderbot/3.0.0 (+ http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)"
     }
 
     # Set up volume mount:
