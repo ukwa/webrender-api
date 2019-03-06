@@ -169,6 +169,8 @@ def _warcprox_write_har_content(har_js, url, warc_prefix, warcprox=WARCPROX, inc
                 im_fmt = 'image/png'
             elif im_fmt == 'JPEG' or im_fmt == 'JPG':
                 im_fmt = 'image/jpeg'
+            elif im_fmt == 'PDF':
+                im_fmt = 'application/pdf'
             else:
                 im_fmt = 'application/octet-stream; ext=%s' % im_fmt
             content = rende['content']
