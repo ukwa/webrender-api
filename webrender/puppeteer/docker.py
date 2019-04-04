@@ -62,7 +62,7 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
     with open(tmp, "r") as i:
         har = i.read()
     shutil.rmtree(tmp_dir)
-    output = _warcprox_write_har_content(har, url, warc_prefix, warcprox=proxy,
+    output = _warcprox_write_har_content(har, url, warc_prefix, warcprox=WARCPROX,
                                          include_rendered_in_har=include_rendered, return_screenshot=return_screenshot)
     return output
 
