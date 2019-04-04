@@ -8,10 +8,12 @@ import logging as logger
 import urllib.request
 import urllib.error
 from PIL import Image
-from datetime import date
+from datetime import date, datetime
+from wsgiref.handlers import format_date_time
 import docker
 client = docker.from_env()
 
+WAYBACK_TS_FORMAT = '%Y%m%d%H%M%S'
 
 # Location of WARCPROX proxy used to store WARC records:
 WARCPROX = os.getenv("WARCPROX", None)
@@ -21,7 +23,7 @@ DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
 
 
 def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.today().isoformat(),
-                       include_rendered=False, return_screenshot=False):
+                       include_rendered=False, return_screenshot=False, target_date=None):
     """Gets the raw HAR output from PhantomJs with rendered image(s)."""
 
     # Set up Docker container environment:
@@ -34,6 +36,11 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
         'USER_AGENT_ADDITIONAL': "bl.uk_lddc_renderbot/3.0.0 (+ http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)",
         'WARCPROX_WARC_PREFIX':  warc_prefix
     }
+
+    # Add the datetime if needed:
+    if target_date:
+        td = datetime.strptime(target_date, WAYBACK_TS_FORMAT)
+        d_env['MEMENTO_ACCEPT_DATETIME'] = format_date_time(td)
 
     # Set up volume mount:
     tmp_dir = tempfile.mkdtemp(dir=os.environ.get('WEB_RENDER_TMP', '/tmp/'))
@@ -244,7 +251,7 @@ def _warcprox_write_record(
         request.set_proxy(warcprox_address, "http")
         logger.debug("Connecting via "+warcprox_address)
     else:
-        logger.error("Cannot write WARC records without warcprox!")
+        logger.info("Cannot write WARC records without warcprox!")
         return
 
     try:

@@ -47,10 +47,18 @@ def render():
     show_screenshot = flask.request.args.get('show_screenshot', False)
     app.logger.debug("Got show_screenshot: %s" % show_screenshot)
     #
+    target_date = flask.request.args.get('target_date', None)
+    app.logger.debug("Got target_date: %s" % target_date)
+    #
     if show_screenshot:
         return flask.send_file(io.BytesIO(
             get_har_with_image(url, selectors, warc_prefix=warc_prefix,
-                  include_rendered=include_rendered, return_screenshot=True)), mimetype='image/png')
+                  include_rendered=include_rendered, return_screenshot=True, target_date=target_date)), mimetype='image/png')
     else:
         return flask.jsonify(get_har_with_image(url, selectors, warc_prefix=warc_prefix,
-                                                          include_rendered=include_rendered))
+                  include_rendered=include_rendered,  target_date=target_date))
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
+
