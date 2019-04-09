@@ -40,7 +40,7 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
     # Add the datetime if needed:
     if target_date:
         td = datetime.strptime(target_date, WAYBACK_TS_FORMAT)
-        d_env['MEMENTO_ACCEPT_DATETIME'] = format_date_time(td)
+        d_env['MEMENTO_ACCEPT_DATETIME'] = format_date_time(td.timestamp())
 
     # Set up volume mount:
     tmp_dir = tempfile.mkdtemp(dir=os.environ.get('WEB_RENDER_TMP', '/tmp/'))
