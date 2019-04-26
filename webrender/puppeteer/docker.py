@@ -49,7 +49,7 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
         tmp_dir: {'bind': '/output', 'mode': 'rw'}
     }
     # Set up the container and run it:
-    d_c = client.containers.create('ukwa/webrender-puppeteer:1.0.0', command="node renderer.js %s" % url,
+    d_c = client.containers.create('ukwa/webrender-puppeteer:1.0.1', command="node renderer.js %s" % url,
                                    environment=d_env, volumes=d_vol, cap_add=['SYS_ADMIN'], network=DOCKER_NETWORK,
                                    detach=True, restart_policy={"Name": "on-failure", "MaximumRetryCount": 2})
     d_c.start()
