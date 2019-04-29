@@ -20,7 +20,7 @@ WARCPROX = os.getenv("WARCPROX", None)
 
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
-DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.1')
+DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.2')
 # Make sure we get the container image:
 client.images.pull(DOCKER_RENDERER_IMAGE)
 
