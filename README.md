@@ -1,8 +1,8 @@
-webrender-phantomjs
-===================
+webrender-api
+=============
 
-A standalone web-rendering service that extracts links for crawlers. It also expects to be deployed behind warcprox
-and uses that to store the rendered results as WARC records.
+A standalone web-rendering service, for rendering the live web during crawls, and rendering the archived web afterwards.  During crawls, it should be deployed behind warcprox, which ensures all the required resources are packaged as WARC records.  When used after crawls, it can be used to compare pre/post-crawl results and for access screenshot and thumbnail generation.
+
 
 
 API
@@ -23,12 +23,12 @@ Running the application
 
 For development purposes, install [Flask](http://flask.pocoo.org/) and run
 
-    $ FLASK_APP=wrengine.py flask run
+    $ FLASK_APP=webrender/wrengine.py flask run
 
 and go to http://127.0.0.1:5000/
 
 For production deployment, an example [gunicorn](http://docs.gunicorn.org/en/latest/install.html) configuration is included:
 
-    $ gunicorn -c gunicorn.ini wrengine:app
+    $ gunicorn -c gunicorn.ini webrender.wrengine:app
 
 

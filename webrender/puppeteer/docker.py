@@ -11,7 +11,7 @@ from PIL import Image
 from datetime import date, datetime
 from wsgiref.handlers import format_date_time
 import docker
-client = docker.from_env()
+client = docker.from_env(timeout=5*60)
 
 WAYBACK_TS_FORMAT = '%Y%m%d%H%M%S'
 
