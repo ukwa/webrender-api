@@ -36,7 +36,7 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
         'HTTP_PROXY': proxy,
         'HTTPS_PROXY': proxy,
         'LC_ALL': 'en_US.utf8',
-        'USER_AGENT_ADDITIONAL': "bl.uk_lddc_renderbot/3.0.0 (+ http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)",
+        'USER_AGENT_ADDITIONAL': "bl.uk_ldfc_renderbot/3.0.0 (+ http://www.bl.uk/aboutus/legaldeposit/websites/websites/faqswebmaster/index.html)",
         'WARCPROX_WARC_PREFIX':  warc_prefix
     }
 
@@ -61,6 +61,8 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
     d_logs = d_c.logs()
     d_c.stop()
     d_c.remove(force=True)
+    ## Attempt to ensure clean-up: NB I think the timeout is likely the problem, rather than the previous dc_remove not working
+    #client.remove_container(d_c, force=True)
 
     # If this fails completely, assume this was a temporary problem and suggest retrying the request:
     tmp = os.path.join(tmp_dir,'./rendered.har')
