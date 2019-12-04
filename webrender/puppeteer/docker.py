@@ -11,7 +11,6 @@ from PIL import Image
 from datetime import date, datetime
 from wsgiref.handlers import format_date_time
 import docker
-client = docker.from_env(timeout=5*60)
 
 WAYBACK_TS_FORMAT = '%Y%m%d%H%M%S'
 
@@ -21,6 +20,11 @@ WARCPROX = os.getenv("WARCPROX", None)
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
 DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.2')
+DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 15 minutes
+
+# Set up the Docker client:
+client = docker.from_env(timeout=DOCKER_TIMEOUT)
+
 # Make sure we get the container image:
 client.images.pull(DOCKER_RENDERER_IMAGE)
 
