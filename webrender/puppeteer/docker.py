@@ -177,7 +177,7 @@ def _warcprox_write_har_content(har_js, url, warc_prefix, warcprox=WARCPROX, inc
         _warcprox_write_record(warcprox_address=warcprox,
                 url="onreadydom:{}".format(url),
                 warc_type="resource", content_type="text/html",
-                payload=dom, location=final_location,
+                payload=bytearray(dom,'UTF-8'), location=final_location,
                 extra_headers= warcprox_headers )
         # Store the rendered elements:
         full_png = None
