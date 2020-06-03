@@ -20,7 +20,7 @@ WARCPROX = os.getenv("WARCPROX", None)
 
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
-DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.5')
+DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.7')
 DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 15 minutes
 
 # Set up the Docker client:
@@ -252,7 +252,9 @@ def _warcprox_write_record(
         headers['Location'] = location
     if extra_headers:
         headers.update(extra_headers)
-    request = urllib.request.Request(quote(url), method="WARCPROX_WRITE_RECORD",
+    # Cope with Unicode URLs (based on https://stackoverflow.com/a/4494314/6689)
+    url = quote(url, safe="/#%[]=:;$&()+,!?*@'~")
+    request = urllib.request.Request(url, method="WARCPROX_WRITE_RECORD",
                                      headers=headers, data=payload)
 
     # XXX setting request.type="http" is a hack to stop urllib from trying
