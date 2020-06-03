@@ -7,6 +7,7 @@ import tempfile
 import logging as logger
 import urllib.request
 import urllib.error
+from urllib.parse import quote
 from PIL import Image
 from datetime import date, datetime
 from wsgiref.handlers import format_date_time
@@ -177,7 +178,7 @@ def _warcprox_write_har_content(har_js, url, warc_prefix, warcprox=WARCPROX, inc
         _warcprox_write_record(warcprox_address=warcprox,
                 url="onreadydom:{}".format(url),
                 warc_type="resource", content_type="text/html",
-                payload=bytearray(dom,'UTF-8'), location=final_location,
+                payload=dom, location=final_location,
                 extra_headers= warcprox_headers )
         # Store the rendered elements:
         full_png = None
@@ -251,7 +252,7 @@ def _warcprox_write_record(
         headers['Location'] = location
     if extra_headers:
         headers.update(extra_headers)
-    request = urllib.request.Request(url, method="WARCPROX_WRITE_RECORD",
+    request = urllib.request.Request(quote(url), method="WARCPROX_WRITE_RECORD",
                                      headers=headers, data=payload)
 
     # XXX setting request.type="http" is a hack to stop urllib from trying
