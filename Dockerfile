@@ -1,11 +1,13 @@
 FROM python:3.7-slim
 
-COPY . /webrender
+COPY requirements.txt /webrender/requirements.txt
 
 WORKDIR webrender
 
 RUN \
   pip install -r requirements.txt
+
+COPY . .
 
 EXPOSE 8010
 

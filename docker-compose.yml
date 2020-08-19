@@ -10,6 +10,7 @@ services:
       - "DOCKER_NETWORK=webrender-api_default" # warcprox network, to attach renderer containers to
       - "LC_ALL=en_US.utf8"
       - "WEB_RENDER_TMP=/tmp/webrender" # Has to match the _host_ folder mounted below.
+      - "DOCKER_RENDERER_IMAGE=ukwa/webrender-puppeteer:1.0.9"
     ports:
       - "8010:8010"
     links:

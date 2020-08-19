@@ -20,7 +20,7 @@ WARCPROX = os.getenv("WARCPROX", None)
 
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
-DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.7')
+DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.9')
 DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 15 minutes
 
 # Set up the Docker client:
@@ -57,7 +57,7 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
         tmp_dir: {'bind': '/output', 'mode': 'rw'}
     }
     # Set up the container and run it:
-    d_c = client.containers.create(DOCKER_RENDERER_IMAGE, command="node renderer.js %s" % url,
+    d_c = client.containers.create(DOCKER_RENDERER_IMAGE, command="node renderer.js %s" % url, init=True,
                                    environment=d_env, volumes=d_vol, cap_add=['SYS_ADMIN'], network=DOCKER_NETWORK,
                                    detach=True, restart_policy={"Name": "on-failure", "MaximumRetryCount": 2})
     d_c.start()
