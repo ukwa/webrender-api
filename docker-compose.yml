@@ -49,7 +49,6 @@ services:
   # Reference for env vars: https://github.com/lyrasis/docker-cantaloupe/blob/master/Dockerfile
   # 
   iiif:
-    #image: mitlibraries/cantaloupe
     image: lyrasis/cantaloupe
     environment:
       SOURCE_STATIC: "HttpSource"
@@ -57,9 +56,12 @@ services:
       HTTPSOURCE_BASICLOOKUPSTRATEGY_URL_SUFFIX: ""
       HTTPSOURCE_REQUEST_TIMEOUT: 3600
       PROCESSOR_STREAM_RETRIEVAL_STRATEGY: "CacheStrategy"
-      PROCESSOR_DOWNSCALE_FILTER: Lanczos3 # Seems to cope better with sharp edges
-      PROCESSOR_JPG_QUALITY: 100 # Web pages suffer badly from JPEG artefacts. Can use PNG instead.
-      LOG_APPLICATION_LEVEL: "info"
+      # Seems to cope better with sharp edges:
+      PROCESSOR_DOWNSCALE_FILTER: "Lanczos3"
+      # Web pages suffer badly from JPEG artefacts. Can use PNG instead.
+      PROCESSOR_JPG_QUALITY: 100 
+      ENDPOINT_ADMIN_ENABLED: "true"
+      LOG_APPLICATION_LEVEL: "warn"
       LOG_ACCESS_CONSOLEAPPENDER_ENABLED: "true"
     ports:
       - 8182:8182
