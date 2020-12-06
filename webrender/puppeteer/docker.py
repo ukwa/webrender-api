@@ -27,8 +27,11 @@ DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 
 client = docker.from_env(timeout=DOCKER_TIMEOUT)
 
 # Make sure we get the container image:
-client.images.pull(DOCKER_RENDERER_IMAGE)
-
+try:
+  client.images.pull(DOCKER_RENDERER_IMAGE)
+except Exception as e:
+    logger.warning("Exception when pulling renderer image: %s", e)
+    pass
 
 def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.today().isoformat(),
                        include_rendered=False, return_screenshot=False, target_date=None, scale=None):

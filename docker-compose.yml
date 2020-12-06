@@ -14,7 +14,9 @@ services:
       - "LC_ALL=en_US.utf8"
       - "WEB_RENDER_TMP=/tmp/webrender" # Has to match the _host_ folder mounted below.
       - "DOCKER_RENDERER_IMAGE=ukwa/webrender-puppeteer:1.0.10"
-      - "WARCPROX=warcprox:8000" # Use WARCPROX so that interactions are archived.
+      #- "WARCPROX=warcprox:8000" # Use WARCPROX so that interactions are archived.
+      - "HTTP_PROXY=explorer.bl.uk:3127"
+      - "HTTPS_PROXY=explorer.bl.uk:3127"
     ports:
       - "8010:8010"
     volumes:
@@ -29,8 +31,6 @@ services:
       - "LC_ALL=en_US.utf8"
       - "TMP=/tmp/warcprox"
       - "CDXSERVER_ENDPOINT=http://cdxserver:8080/fc"
-      - "http_proxy=${HTTP_PROXY}" # Pass through any system proxy
-      - "https_proxy=${HTTPS_PROXY}"
     #ports:
     #  - "8000:8000"
     volumes:
@@ -44,4 +44,25 @@ services:
     ports:
       - "7070:8080"
 
+  # 
+  # IIIF Server to manipulate images
+  # Reference for env vars: https://github.com/lyrasis/docker-cantaloupe/blob/master/Dockerfile
+  # 
+  iiif:
+    #image: mitlibraries/cantaloupe
+    image: lyrasis/cantaloupe
+    environment:
+      SOURCE_STATIC: "HttpSource"
+      HTTPSOURCE_BASICLOOKUPSTRATEGY_URL_PREFIX: "http://webrender:8010/render?show_screenshot=true&url="
+      HTTPSOURCE_BASICLOOKUPSTRATEGY_URL_SUFFIX: ""
+      HTTPSOURCE_REQUEST_TIMEOUT: 3600
+      PROCESSOR_STREAM_RETRIEVAL_STRATEGY: "CacheStrategy"
+      PROCESSOR_DOWNSCALE_FILTER: Lanczos3 # Seems to cope better with sharp edges
+      PROCESSOR_JPG_QUALITY: 100 # Web pages suffer badly from JPEG artefacts. Can use PNG instead.
+      LOG_APPLICATION_LEVEL: "info"
+      LOG_ACCESS_CONSOLEAPPENDER_ENABLED: "true"
+    ports:
+      - 8182:8182
+    volumes:
+      - ./cache:/var/cache/cantaloupe
 
