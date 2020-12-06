@@ -50,13 +50,17 @@ def render():
     target_date = flask.request.args.get('target_date', None)
     app.logger.debug("Got target_date: %s" % target_date)
     #
+    scale = flask.request.args.get('scale', None)
+    app.logger.debug("Got scale: %s" % scale)
+    #
     if show_screenshot:
         return flask.send_file(io.BytesIO(
             get_har_with_image(url, selectors, warc_prefix=warc_prefix,
-                  include_rendered=include_rendered, return_screenshot=True, target_date=target_date)), mimetype='image/png')
+                  include_rendered=include_rendered, return_screenshot=True, target_date=target_date,
+                  scale=scale)), mimetype='image/png')
     else:
         return flask.jsonify(get_har_with_image(url, selectors, warc_prefix=warc_prefix,
-                  include_rendered=include_rendered,  target_date=target_date))
+                  include_rendered=include_rendered,  target_date=target_date, scale=scale))
 
 
 if __name__ == '__main__':

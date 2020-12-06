@@ -20,7 +20,7 @@ WARCPROX = os.getenv("WARCPROX", None)
 
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
-DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.9')
+DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.10')
 DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 15 minutes
 
 # Set up the Docker client:
@@ -31,7 +31,7 @@ client.images.pull(DOCKER_RENDERER_IMAGE)
 
 
 def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.today().isoformat(),
-                       include_rendered=False, return_screenshot=False, target_date=None):
+                       include_rendered=False, return_screenshot=False, target_date=None, scale=None):
     """Gets the raw HAR output from PhantomJs with rendered image(s)."""
 
     # Set up Docker container environment:
@@ -49,6 +49,10 @@ def get_har_with_image(url, selectors=None, proxy=WARCPROX, warc_prefix=date.tod
     if target_date:
         td = datetime.strptime(target_date, WAYBACK_TS_FORMAT)
         d_env['MEMENTO_ACCEPT_DATETIME'] = format_date_time(td.timestamp())
+
+    # Add device scale factor if set:
+    if scale:
+        d_env['DEVICE_SCALE_FACTOR'] = scale
 
     # Set up volume mount:
     tmp_dir = tempfile.mkdtemp(dir=os.environ.get('WEB_RENDER_TMP', '/tmp/'))

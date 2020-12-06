@@ -2,24 +2,26 @@ version: '2'
 
 services:
 
-  # Web page rendering service
+  # Web page rendering service, rendering live web pages:
   webrender:
-    build: .
+    build:
+      context: .
+      args:
+        http_proxy: ${HTTP_PROXY}
+        https_proxy: ${HTTPS_PROXY}
     environment: # DOCKER_HOST could be used to run rendering on a dedicated service.
-      - "WARCPROX=warcprox:8000"
       - "DOCKER_NETWORK=webrender-api_default" # warcprox network, to attach renderer containers to
       - "LC_ALL=en_US.utf8"
       - "WEB_RENDER_TMP=/tmp/webrender" # Has to match the _host_ folder mounted below.
-      - "DOCKER_RENDERER_IMAGE=ukwa/webrender-puppeteer:1.0.9"
+      - "DOCKER_RENDERER_IMAGE=ukwa/webrender-puppeteer:1.0.10"
+      - "WARCPROX=warcprox:8000" # Use WARCPROX so that interactions are archived.
     ports:
       - "8010:8010"
-    links:
-      - warcprox
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # Needs to connect to Docker to launch render container
       - /tmp/webrender:/tmp/webrender # Host mount must match internal mount at present!
 
-# WARC Proxy, with de-duplication disabled and a rapid rollover:
+  # WARC Proxy, with de-duplication disabled and a rapid rollover:
   warcprox:
     image: ukwa/warcprox:2.4.17
     command: "warcprox -b 0.0.0.0 -d /heritrix/wren --base32 --gzip --rollover-idle-time 600 --dedup-db-file /dev/null --stats-db-file /dev/null --quiet --plugin warcprox-plugins.listeners.UpdateOutbackCDX"
@@ -27,8 +29,10 @@ services:
       - "LC_ALL=en_US.utf8"
       - "TMP=/tmp/warcprox"
       - "CDXSERVER_ENDPOINT=http://cdxserver:8080/fc"
-    ports:
-      - "8000:8000"
+      - "http_proxy=${HTTP_PROXY}" # Pass through any system proxy
+      - "https_proxy=${HTTPS_PROXY}"
+    #ports:
+    #  - "8000:8000"
     volumes:
       - "./output:/heritrix/wren"
 
@@ -38,6 +42,6 @@ services:
     # Verbose form logs submissions:
     #command: "java -jar outbackcdx.jar -v -d /cdx-data -p 8080 -b 0.0.0.0"
     ports:
-      - "9090:8080"
+      - "7070:8080"
 
 
