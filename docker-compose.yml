@@ -63,6 +63,8 @@ services:
       ENDPOINT_ADMIN_ENABLED: "true"
       LOG_APPLICATION_LEVEL: "warn"
       LOG_ACCESS_CONSOLEAPPENDER_ENABLED: "true"
+      # Not needed in prod:
+      PRINT_STACK_TRACE_ON_ERROR_PAGES: "false"
     ports:
       - 8182:8182
     volumes:
