@@ -21,7 +21,7 @@ WARCPROX = os.getenv("WARCPROX", None)
 # Get the Docker Network to create the browser container on:
 DOCKER_NETWORK = os.getenv("DOCKER_NETWORK", None)
 DOCKER_RENDERER_IMAGE = os.getenv("DOCKER_RENDERER_IMAGE", 'ukwa/webrender-puppeteer:1.0.10')
-DOCKER_TIMEOUT = os.getenv('DOCKER_TIMEOUT', 15*60) # long (default) timeout of 15 minutes
+DOCKER_TIMEOUT = int(os.getenv('DOCKER_TIMEOUT', 15*60)) # long (default) timeout of 15 minutes
 
 # Set up the Docker client:
 client = docker.from_env(timeout=DOCKER_TIMEOUT)
